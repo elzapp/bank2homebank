@@ -13,7 +13,7 @@ class Transaction:
     def getPayee(self):
         return self.payee if hasattr(self,"payee") else ""
     def getMemo(self):
-        return self.memo if hasattr(self,"memo") else ""
+        return self.memo if hasattr(self,"memo") else self.getInfo()
     def getCatetory(self):
         return self.category if hasattr(self,"category") else ""
     def getTagsString(self):
