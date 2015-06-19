@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import csv
 import datetime
 class Transaction:
@@ -71,9 +72,18 @@ def writeHomeBank(transactions, path):
             ta.append(t.getTagsString())
             writer.writerow(ta)
 
-if __name__ == "__main__":
-  import sys
-  (_,src,dst) = sys.argv
+handlers={
+    "skandiabanken":loadSkandiabanken,
+    "skb":loadSkandiabanken,
+    "sparebankenvest":loadSpv,
+    "spv":loadSpv
+    }
 
-  #writeHomeBank(loadSkandiabanken(src),dst)
-  writeHomeBank(loadSpv(src),dst)
+if __name__ == "__main__":
+    import sys
+    (_,bank,src,dst) = sys.argv
+    if bank in handlers:
+        reader=handlers[bank]
+        writeHomeBank(reader(src),dst)
+    else:
+        print("Sorry, no reader defined for \"{}\"".format(bank))
