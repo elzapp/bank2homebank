@@ -23,12 +23,15 @@ class Transaction:
 
 
 def loadSkandiabanken(path):
+    print("skandiabanken")
     paymodes={"Overføring":4, "Avtalegiro":8}
     r=[]
     with open(path, newline='',encoding="iso-8859-1") as csvfile:
         reader = csv.reader(csvfile, delimiter="\t", quotechar='"')
         for row in reader:
+            print(row)
             if(len(row)>=6 and row[0] != "" and row[1] != "RENTEDATO"):
+              print(row)
               t=Transaction()
               t.date=datetime.datetime.strptime(row[0],"%Y-%m-%d")
               if row[5] != "":
@@ -44,11 +47,12 @@ def loadSkandiabanken(path):
 
 
 def loadSpv(path):
+    print("Sparebanken Vest")
     r=[]
     with open(path, newline='',encoding="iso-8859-1") as csvfile:
         reader = csv.reader(csvfile, delimiter="\t", quotechar='"')
         for row in reader:
-            if row[0] != "Bokføringsdato":
+            if row[0] != "Bokføringsdato" and row[0] != "Dato":
                 print(row)
                 t=Transaction()
                 t.date=datetime.datetime.strptime(row[0],"%d.%m.%Y")
