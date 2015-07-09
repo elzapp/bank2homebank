@@ -66,7 +66,7 @@ def writeHomeBank(transactions, path):
         writer = csv.writer(f,delimiter=";")
         for t in transactions:
             ta=[]
-            ta.append(t.getDate().strftime("%d-%m-%y"))
+            ta.append(t.getDate().strftime("%m-%d-%y"))
             ta.append(t.getPaymode())
             ta.append(t.getInfo())
             ta.append(t.getPayee())
