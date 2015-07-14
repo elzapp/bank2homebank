@@ -22,6 +22,49 @@ class Transaction:
         return "Transaction(date='{}', amount='{}', info='{}'".format(self.date,self.amount,self.info)
 
 
+aliases={
+    "date":["BOKFØRINGSDATO","Bokføringsdato","Dato","Bokført"],
+    "paymode":["TYPE","Tekstkode"],
+    "info":["TEKST","Spesifikasjon","Forklaring","Beskrivelse"],
+    "amount":["Beløp NOK","Beløp","INN PÅ KONTO","Inn på konto","Innskudd"],
+    "amount_neg":["UT FRA KONTO","Ut av konto","Uttak"]}
+
+def find_value(key,record):
+    if key == "amount":
+        for realkey in aliases["amount"]:
+            if realkey in record and record[realkey] != "":
+                return record[realkey].replace(",",".")
+        for realkey in aliases["amount_neg"]:
+            if realkey in record and record[realkey] != "":
+                return "-"+record[realkey].replace(",",".")
+    for realkey in aliases[key]:
+        if realkey in record:
+            return record[realkey]
+
+def loadGeneric(path):
+    with open(path, newline='',encoding="iso-8859-1") as csvfile:
+        delimiter="\t"
+        if ";" in csvfile.readline():
+            delimiter=";"
+        csvfile.seek(0)
+        reader = csv.reader(csvfile, delimiter=delimiter, quotechar='"')
+        alldata=[e for e in reader if len(e)>0 and e[0] !=""]
+        print(alldata[0])
+        data=[dict(zip(alldata[0],e)) for e in alldata[1:]]
+        r=[]
+        for e in data:
+            t=Transaction()
+            t.amount=find_value("amount",e)
+            t.info=find_value("info",e)
+            t.category=find_value("paymode",e)
+            if "-" in find_value("date",e):
+                t.date=datetime.datetime.strptime(find_value("date",e),"%Y-%m-%d")
+            else:
+                t.date=datetime.datetime.strptime(find_value("date",e),"%d.%m.%Y")
+            r.append(t)
+        return r
+
+
 def loadSkandiabanken(path):
     print("skandiabanken")
     paymodes={"Overføring":4, "Avtalegiro":8}
@@ -115,7 +158,8 @@ handlers={
     "sparebankenvest":loadSpv,
     "spv":loadSpv,
     "fsb":loadFanaSparebank,
-    "fanasparebank":loadFanaSparebank
+    "fanasparebank":loadFanaSparebank,
+    "generic":loadGeneric
     }
 
 if __name__ == "__main__":
