@@ -45,6 +45,39 @@ def loadSkandiabanken(path):
               r.append(t)
     return r
 
+def loadFanaSparebank(path):
+    print("Fana Sparebank")
+    paymodes={"GEBYR":10,"GIRO":8,"VARER":1,"OVERFØRT":8,"OVFNETTB":4}
+    r=[]
+    with open(path, newline='',encoding="iso-8859-1") as csvfile:
+        reader = csv.reader(csvfile, delimiter="\t")
+        mode="siste"
+        for row in reader:
+            if row[0] == "Dato":
+                mode = "siste"
+            elif row[1] == "Rentedato":
+                mode = "arkiv"
+            elif mode == "siste":
+                print(row)
+                t=Transaction()
+                t.date=datetime.datetime.strptime(row[0],"%d.%m.%Y")
+                t.info=row[1]
+                if row[3] != "":
+                  t.amount=row[3].replace(",",".")
+                else:
+                  t.amount="-"+row[2].replace(",",".")
+                r.append(t)
+            elif mode == "arkiv":
+                print(row)
+                t=Transaction()
+                t.date=datetime.datetime.strptime(row[0],"%d.%m.%Y")
+                t.info=row[3]
+                t.amount = row[4].replace(",",".")
+                t.category=row[2]
+                r.append(t)
+                if t.category in paymodes:
+                  t.paymode=paymodes[t.category]
+    return r
 
 def loadSpv(path):
     print("Sparebanken Vest")
@@ -80,7 +113,9 @@ handlers={
     "skandiabanken":loadSkandiabanken,
     "skb":loadSkandiabanken,
     "sparebankenvest":loadSpv,
-    "spv":loadSpv
+    "spv":loadSpv,
+    "fsb":loadFanaSparebank,
+    "fanasparebank":loadFanaSparebank
     }
 
 if __name__ == "__main__":
