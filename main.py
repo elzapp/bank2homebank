@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import csv
 import datetime
+from configuration import aliases
+
 class Transaction:
     def getDate(self):
         return self.date
@@ -21,13 +23,6 @@ class Transaction:
     def __repr__(self):
         return "Transaction(date='{}', amount='{}', info='{}'".format(self.date,self.amount,self.info)
 
-
-aliases={
-    "date":["BOKFØRINGSDATO","Bokføringsdato","Dato","Bokført"],
-    "paymode":["TYPE","Tekstkode"],
-    "info":["TEKST","Spesifikasjon","Forklaring","Beskrivelse"],
-    "amount":["Beløp NOK","Beløp","INN PÅ KONTO","Inn på konto","Innskudd"],
-    "amount_neg":["UT FRA KONTO","Ut av konto","Uttak"]}
 
 def find_value(key,record):
     if key == "amount":
