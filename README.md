@@ -5,3 +5,10 @@ Conversion tool from Norwegian banks export CSV formats to the HomeBank (http://
 ```bash
 $ python3 main.py input.csv output.csv
 ```
+
+## Supported banks
+
+ - Skandiabanken
+ - DNB
+ - Fana Sparebank
+ - Sparebanken Vest
