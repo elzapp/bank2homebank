@@ -64,6 +64,9 @@ def writeHomeBank(transactions, path):
         writer = csv.writer(f,delimiter=";")
         for t in transactions:
             ta=[]
+            # According to the HomeBank documentation, this format
+            # should be "%d-%m-%y", however, that resulted in wrong dates in
+            # HomeBank 5.0.2
             ta.append(t.getDate().strftime("%m-%d-%y"))
             ta.append(t.getPaymode())
             ta.append(t.getInfo())
