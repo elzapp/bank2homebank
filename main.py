@@ -59,79 +59,6 @@ def loadGeneric(path):
             r.append(t)
         return r
 
-
-def loadSkandiabanken(path):
-    print("skandiabanken")
-    paymodes={"Overføring":4, "Avtalegiro":8}
-    r=[]
-    with open(path, newline='',encoding="iso-8859-1") as csvfile:
-        reader = csv.reader(csvfile, delimiter="\t", quotechar='"')
-        for row in reader:
-            print(row)
-            if(len(row)>=6 and row[0] != "" and row[1] != "RENTEDATO"):
-              print(row)
-              t=Transaction()
-              t.date=datetime.datetime.strptime(row[0],"%Y-%m-%d")
-              if row[5] != "":
-                t.amount=float(row[5]) * -1.0
-              if row[6] != "":
-                t.amount=float(row[6]) * 1.0
-              t.info=row[4]
-              t.category=row[3]
-              if t.category in paymodes:
-                t.paymode=paymodes[t.category]
-              r.append(t)
-    return r
-
-def loadFanaSparebank(path):
-    print("Fana Sparebank")
-    paymodes={"GEBYR":10,"GIRO":8,"VARER":1,"OVERFØRT":8,"OVFNETTB":4}
-    r=[]
-    with open(path, newline='',encoding="iso-8859-1") as csvfile:
-        reader = csv.reader(csvfile, delimiter="\t")
-        mode="siste"
-        for row in reader:
-            if row[0] == "Dato":
-                mode = "siste"
-            elif row[1] == "Rentedato":
-                mode = "arkiv"
-            elif mode == "siste":
-                print(row)
-                t=Transaction()
-                t.date=datetime.datetime.strptime(row[0],"%d.%m.%Y")
-                t.info=row[1]
-                if row[3] != "":
-                  t.amount=row[3].replace(",",".")
-                else:
-                  t.amount="-"+row[2].replace(",",".")
-                r.append(t)
-            elif mode == "arkiv":
-                print(row)
-                t=Transaction()
-                t.date=datetime.datetime.strptime(row[0],"%d.%m.%Y")
-                t.info=row[3]
-                t.amount = row[4].replace(",",".")
-                t.category=row[2]
-                r.append(t)
-                if t.category in paymodes:
-                  t.paymode=paymodes[t.category]
-    return r
-
-def loadSpv(path):
-    print("Sparebanken Vest")
-    r=[]
-    with open(path, newline='',encoding="iso-8859-1") as csvfile:
-        reader = csv.reader(csvfile, delimiter="\t", quotechar='"')
-        for row in reader:
-            if row[0] != "Bokføringsdato" and row[0] != "Dato":
-                print(row)
-                t=Transaction()
-                t.date=datetime.datetime.strptime(row[0],"%d.%m.%Y")
-                t.info=row[1]
-                t.amount=row[5]
-                r.append(t)
-    return r
-
 def writeHomeBank(transactions, path):
     with open(path, 'w', newline='') as f:
         writer = csv.writer(f,delimiter=";")
@@ -147,21 +74,8 @@ def writeHomeBank(transactions, path):
             ta.append(t.getTagsString())
             writer.writerow(ta)
 
-handlers={
-    "skandiabanken":loadSkandiabanken,
-    "skb":loadSkandiabanken,
-    "sparebankenvest":loadSpv,
-    "spv":loadSpv,
-    "fsb":loadFanaSparebank,
-    "fanasparebank":loadFanaSparebank,
-    "generic":loadGeneric
-    }
 
 if __name__ == "__main__":
     import sys
-    (_,bank,src,dst) = sys.argv
-    if bank in handlers:
-        reader=handlers[bank]
-        writeHomeBank(reader(src),dst)
-    else:
-        print("Sorry, no reader defined for \"{}\"".format(bank))
+    (_,src,dst) = sys.argv
+    writeHomeBank(loadGeneric(src),dst)
