@@ -44,14 +44,19 @@ def loadGeneric(path):
         csvfile.seek(0)
         reader = csv.reader(csvfile, delimiter=delimiter, quotechar='"')
         alldata=[e for e in reader if len(e)>0 and e[0] !=""]
-        print(alldata[0])
         data=[dict(zip(alldata[0],e)) for e in alldata[1:]]
         r=[]
         for e in data:
             t=Transaction()
             t.amount=find_value("amount",e)
+            if not t.amount:
+                print("Could not find amount in row {}".format(str(e)))
             t.info=find_value("info",e)
+            if not t.info:
+                print("Could not find info in row {}".format(str(e)))
             t.category=find_value("paymode",e)
+            if not t.category:
+                print("Could not find paymode in row {}".format(str(e)))
             if "-" in find_value("date",e):
                 t.date=datetime.datetime.strptime(find_value("date",e),"%Y-%m-%d")
             else:
