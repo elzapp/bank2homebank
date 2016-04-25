@@ -36,8 +36,8 @@ def find_value(key,record):
         if realkey in record:
             return record[realkey]
 
-def loadGeneric(path):
-    with open(path, newline='',encoding="iso-8859-1") as csvfile:
+def loadGeneric(path,enc):
+    with open(path, newline='',encoding=enc) as csvfile:
         delimiter="\t"
         if ";" in csvfile.readline():
             delimiter=";"
@@ -57,6 +57,7 @@ def loadGeneric(path):
             t.category=find_value("paymode",e)
             if not t.category:
                 print("Could not find paymode in row {}".format(str(e)))
+            print(e)
             if "-" in find_value("date",e):
                 t.date=datetime.datetime.strptime(find_value("date",e),"%Y-%m-%d")
             else:
@@ -85,5 +86,10 @@ def writeHomeBank(transactions, path):
 
 if __name__ == "__main__":
     import sys
-    (_,src,dst) = sys.argv
-    writeHomeBank(loadGeneric(src),dst)
+    enc="iso-8859-1"
+    src=sys.argv[1]
+    dst=sys.argv[2]
+    if(len(sys.argv)>3):
+        enc=sys.argv[3]
+    
+    writeHomeBank(loadGeneric(src,enc),dst)

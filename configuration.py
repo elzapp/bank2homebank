@@ -1,6 +1,6 @@
 
 aliases={
-    "date":["BOKFØRINGSDATO","Bokføringsdato","Dato","Bokført"],
+    "date":["BOKFØRINGSDATO","BOKFÃ\x98RINGSDATO","Bokføringsdato","Dato","Bokført"],
     "paymode":["TYPE","Tekstkode"],
     "info":["TEKST","Spesifikasjon","Forklaring","Beskrivelse"],
     "amount":["Beløp NOK","Beløp","INN PÅ KONTO","Inn på konto","Innskudd"],
@@ -13,3 +13,6 @@ aliases={
 paymodes={
     "GEBYR":10,"GIRO":8,"VARER":1,"OVERFØRT":8,"OVFNETTB":4,
     "Varekjøp":1,"Visa":1}
+
+
+category={"AVTGI": "Giro","E-FAKTURA": "Giro"}
